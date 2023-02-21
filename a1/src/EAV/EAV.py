@@ -1,4 +1,4 @@
-from .PRG import PRG
+from ..PRG.PRG import PRG
 
 
 class Eavesdrop:

@@ -1,15 +1,3 @@
-def binpow(a, b, mod):
-    # compute a^b modulo mod on O(logb)
-    res = 1
-    b = b % (mod - 1)
-    while b > 0:
-        if b & 1:
-            res = (res * a) % mod
-        a = (a * a) % mod
-        b >>= 1
-    return res
-
-
 class PRG:
     def __init__(self, security_parameter: int, generator: int,
                  prime_field: int, expansion_factor: int):
@@ -39,10 +27,9 @@ class PRG:
         x_0 = seed
         output = ""
         for i in range(self.l):
-            x_i = binpow(self.g, x_0, self.p)
+            output += "0" if x_0 < (self.p - 1) // 2 else "1"
+            x_i = pow(self.g, x_0, self.p)
             x_0 = x_i
-            output += "0" if x_i < self.p/2 else "1"
-        print(seed, output)
         return output
 
 # 00100101010

@@ -1,3 +1,6 @@
+from ..PRF.PRF import PRF
+
+
 class CBC_MAC:
     def __init__(self, security_parameter: int, generator: int,
                  prime_field: int, expansion_factor: int, keys: list[int]):
@@ -14,7 +17,11 @@ class CBC_MAC:
         :param keys: k₁, k₂
         :type keys: list[int]
         """
-        pass
+        self.n = security_parameter
+        self.k1, self.k2 = keys[0], keys[1]
+        self.prf = PRF(self.n, generator, prime_field, self.k1)
+        self.prf2 = PRF(self.n, generator, prime_field, self.k2)
+        self.l = expansion_factor
 
     def mac(self, message: str) -> int:
         """
@@ -22,7 +29,13 @@ class CBC_MAC:
         :param message: m (with length l(n).n)
         :type message: str
         """
-        pass
+        blocks = [message[i:i + self.n] for i in range(0, len(message), self.n)]
+        t = 0
+        for block in blocks:
+            ts = bin(t)[2:].zfill(self.n)
+            xor = ''.join([str(int(tt) ^ int(b)) for tt, b in zip(ts, block)])
+            t = self.prf.evaluate(int(xor, 2))
+        return self.prf2.evaluate(t)
 
     def vrfy(self, message: str, tag: int) -> bool:
         """
@@ -32,5 +45,4 @@ class CBC_MAC:
         :param tag: t
         :type tag: int
         """
-        pass
-
+        return self.mac(message) == tag

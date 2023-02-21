@@ -1,4 +1,4 @@
-from .PRG import PRG
+from ..PRG.PRG import PRG
 
 
 class PRF:
@@ -26,15 +26,12 @@ class PRF:
         :type x: int
         """
         x: str = bin(x)[2:].zfill(self.n)
-        print("x", x)
         g_x = self.k
         for i in range(self.n):
             g_x = self.prg.generate(g_x)
-            # print(g_x)
-            if x[i] == '1':
+            if x[i] == '0':
                 g_x = g_x[0:self.n]
             else:
-                g_x = g_x[self.n:2*self.n]
-            # print(g_x)
+                g_x = g_x[self.n:2 * self.n]
             g_x = int(g_x, 2)
         return g_x
